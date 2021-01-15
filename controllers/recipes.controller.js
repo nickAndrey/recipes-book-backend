@@ -5,9 +5,7 @@ const model = new Model('recipes');
 exports.createTable = async (req, res) => {
   try {
     await model.createTable();
-    res.status(httpStatuses.OK).json({
-      message: 'Success! The table was successfully added.',
-    });
+    res.status(httpStatuses.OK).json({ message: 'Success! The table was successfully added.' });
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
   }
@@ -15,8 +13,15 @@ exports.createTable = async (req, res) => {
 
 exports.dropTable = async (req, res) => {
   try {
-    await model.dropTable(req.body['reason']);
-    res.status(httpStatuses.OK).json({ message: 'Success! Table was successfully dropped.' });
+    const data = await model.dropTable(req.body['reason']);
+    let message;
+
+    if (typeof data === 'string') {
+      message = data;
+    } else {
+      message = 'the table was dropped successfully.';
+    }
+    res.status(httpStatuses.OK).json({ message });
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
   }

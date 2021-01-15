@@ -1,5 +1,3 @@
-const tableName = 'recipes';
-
 // based on schema `https://schema.org/Recipe`
 module.exports = {
   recipeTableSchema: `(

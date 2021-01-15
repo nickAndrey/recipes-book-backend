@@ -53,10 +53,11 @@ class Model {
     if (reason === 'this is unsafe') {
       return this.pool.query(query);
     }
+    return `failed ${this.table} was not removed`;
   }
 
   async createTable() {
-    const query = `create table if not exists ${this.table}${queries.recipeTableSchema}`;
+    const query = `create table if not exists ${this.table} ${queries.recipeTableSchema}`;
     return this.pool.query(query);
   }
 }
