@@ -1,4 +1,5 @@
 const { pool } = require('./pool');
+const queries = require('./queries');
 
 class Model {
   constructor(table) {
@@ -39,6 +40,23 @@ class Model {
 
   async delete(id) {
     const query = `delete from ${this.table} where id = ${id}`;
+    return this.pool.query(query);
+  }
+
+  async deleteMany(ids) {
+    const query = `delete from ${this.table} where id = any(${ids.map((id) => parseInt(id))}) returning *`;
+    return this.pool.query(query);
+  }
+
+  async dropTable(reason = '') {
+    const query = `drop table if exists ${this.table}`;
+    if (reason === 'this is unsafe') {
+      return this.pool.query(query);
+    }
+  }
+
+  async createTable() {
+    const query = `create table if not exists ${this.table}${queries.recipeTableSchema}`;
     return this.pool.query(query);
   }
 }
