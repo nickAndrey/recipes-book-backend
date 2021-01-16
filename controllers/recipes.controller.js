@@ -29,23 +29,47 @@ exports.dropTable = async (req, res) => {
 
 exports.recipesCreate = async (req, res) => {
   try {
-    const { cookTime, cookingMethod, recipeCategory, recipeCuisine, recipeIngredient, dateCreated } = req.body;
-    const columns = 'cookTime, cookingMethod, recipeCategory, recipeCuisine, recipeIngredient, dateCreated';
-    const values = `'${cookTime}', '${cookingMethod}', '${recipeCategory}', '${recipeCuisine}', '${recipeIngredient}', '${dateCreated}'`;
+    const {
+      name,
+      cooktime,
+      cookingmethod,
+      recipecategory,
+      recipecuisine,
+      recipeingredient,
+      datecreated,
+      author,
+      image,
+      content,
+    } = req.body;
+    const columns =
+      'name, cooktime, cookingmethod, recipecategory, recipecuisine, recipeingredient, datecreated, author, image, content';
+    const values = `
+      '${name}',
+      '${cooktime}',
+      '${cookingmethod}',
+      '${recipecategory}',
+      '${recipecuisine}',
+      '${recipeingredient}',
+      '${datecreated}',
+      '${author}',
+      '${image}',
+      '${content}'
+    `;
 
-    await model.insert(columns, values);
+    const data = await model.insert(columns, values, true);
     res.status(httpStatuses.OK).json({
       message: 'Success! The recipe was added successfully.',
+      rows: data.rows,
     });
   } catch (e) {
-    res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
+    res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack, rb: req.body });
   }
 };
 
 exports.recipesRead = async (req, res) => {
   try {
     const data = await model.select('*');
-    res.status(httpStatuses.OK).json(data);
+    res.status(httpStatuses.OK).json({ rows: data.rows, rowCount: data.rowCount });
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
   }
@@ -62,14 +86,38 @@ exports.recipesReadById = async (req, res) => {
 
 exports.recipesUpdate = async (req, res) => {
   try {
-    const { id, cookTime, cookingMethod, recipeCategory, recipeCuisine, recipeIngredient, dateCreated } = req.body;
-    const columns = 'cookTime, cookingMethod, recipeCategory, recipeCuisine, recipeIngredient, dateCreated';
-    const values = `'${cookTime}', '${cookingMethod}', '${recipeCategory}', '${recipeCuisine}', '${recipeIngredient}', '${dateCreated}'`;
+    const {
+      id,
+      name,
+      cooktime,
+      cookingmethod,
+      recipecategory,
+      recipecuisine,
+      recipeingredient,
+      datecreated,
+      author,
+      image,
+      content,
+    } = req.body;
+    const columns =
+      'name, cooktime, cookingmethod, recipecategory, recipecuisine, recipeingredient, datecreated';
+    const values = `
+      '${name}',
+      '${cooktime}',
+      '${cookingmethod}',
+      '${recipecategory}',
+      '${recipecuisine}',
+      '${recipeingredient}',
+      '${datecreated}',
+      '${author}',
+      '${image}',
+      '${content}'
+    `;
 
     const data = await model.update(columns, values, id, true);
     res.status(httpStatuses.OK).json(data.rows);
   } catch (e) {
-    res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
+    res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack, rb: req.body });
   }
 };
 
