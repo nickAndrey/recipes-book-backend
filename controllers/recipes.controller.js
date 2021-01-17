@@ -123,7 +123,7 @@ exports.recipesUpdate = async (req, res) => {
 
 exports.recipesDelete = async (req, res) => {
   try {
-    const { ids } = req.params;
+    const { ids } = req.body;
     await model.deleteMany(ids);
     res.status(httpStatuses.OK).json({
       message: 'Success! The recipes was deleted successfully.',
