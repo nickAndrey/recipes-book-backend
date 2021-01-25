@@ -1,6 +1,7 @@
 const httpStatuses = require('http-status-codes');
 const { Model } = require('../models/model');
 const model = new Model('recipes');
+const helpers = require('./helpers');
 
 exports.createTable = async (req, res) => {
   try {
@@ -40,29 +41,42 @@ exports.recipesCreate = async (req, res) => {
       author,
       image,
       content,
+      description,
     } = req.body;
     const columns =
-      'name, cooktime, cookingmethod, recipecategory, recipecuisine, recipeingredient, datecreated, author, image, content';
+      'name,' +
+      'cooktime,' +
+      'cookingmethod,' +
+      'recipecategory,' +
+      'recipecuisine,' +
+      'recipeingredient,' +
+      'datecreated,' +
+      'author,' +
+      'image,' +
+      'content,' +
+      'description';
     const values = `
       '${name}',
       '${cooktime}',
       '${cookingmethod}',
       '${recipecategory}',
       '${recipecuisine}',
-      '${recipeingredient}',
+      '${helpers.setAsArray(recipeingredient)}',
       '${datecreated}',
       '${author}',
       '${image}',
-      '${content}'
+      '${content}',
+      '${description}'
     `;
 
     const data = await model.insert(columns, values, true);
+
     res.status(httpStatuses.OK).json({
       message: 'Success! The recipe was added successfully.',
       rows: data.rows,
     });
   } catch (e) {
-    res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack, rb: req.body });
+    res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
   }
 };
 
@@ -98,20 +112,32 @@ exports.recipesUpdate = async (req, res) => {
       author,
       image,
       content,
+      description,
     } = req.body;
     const columns =
-      'name, cooktime, cookingmethod, recipecategory, recipecuisine, recipeingredient, datecreated';
+      'name, ' +
+      'cooktime, ' +
+      'cookingmethod, ' +
+      'recipecategory, ' +
+      'recipecuisine, ' +
+      'recipeingredient,' +
+      ' datecreated,' +
+      ' author,' +
+      ' image, ' +
+      'content, ' +
+      'description';
     const values = `
       '${name}',
       '${cooktime}',
       '${cookingmethod}',
       '${recipecategory}',
       '${recipecuisine}',
-      '${recipeingredient}',
+      '${helpers.setAsArray(recipeingredient)}',
       '${datecreated}',
       '${author}',
       '${image}',
-      '${content}'
+      '${content}',
+      '${description}'
     `;
 
     const data = await model.update(columns, values, id, true);

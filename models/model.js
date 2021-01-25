@@ -21,7 +21,7 @@ class Model {
   }
 
   async insert(columns, values, returnValue = false) {
-    let query = `insert into ${this.table}(${columns}) values (${values})`;
+    let query = `insert into ${this.table} (${columns}) values (${values})`;
 
     if (returnValue) {
       query += `returning id, ${columns}`;
@@ -45,9 +45,11 @@ class Model {
 
   async deleteMany(ids) {
     let query;
-    
+
     if (Array.isArray(ids)) {
-      query = `delete from ${this.table} where id = any(${ids.map((id) => parseInt(id))}) returning *`;
+      query = `delete from ${this.table} where id = any(${ids.map((id) =>
+        parseInt(id)
+      )}) returning *`;
     } else {
       query = `delete from ${this.table} where id = ${ids} returning *`;
     }
