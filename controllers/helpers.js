@@ -7,6 +7,10 @@ exports.setAsArray = (list) => {
 
 exports.dataOutPrepare = (rows) => {
   return rows.map((row) => {
-    return { ...row, content: md.render(row.content) };
+    return {
+      ...row,
+      content: md.render(row.content),
+      content_md: row.content,
+    };
   });
 };
