@@ -61,7 +61,7 @@ exports.recipesCreate = async (req, res) => {
 
     res.status(httpStatuses.OK).json({
       message: 'Success! The recipe was added successfully.',
-      rows: data.rows,
+      rows: helpers.dataOutPrepare(data.rows),
     });
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
@@ -71,7 +71,9 @@ exports.recipesCreate = async (req, res) => {
 exports.recipesRead = async (req, res) => {
   try {
     const data = await model.select('*');
-    res.status(httpStatuses.OK).json({ rows: data.rows, rowCount: data.rowCount });
+    res
+      .status(httpStatuses.OK)
+      .json({ rows: helpers.dataOutPrepare(data.rows), rowCount: data.rowCount });
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
   }
@@ -80,7 +82,7 @@ exports.recipesRead = async (req, res) => {
 exports.recipesReadById = async (req, res) => {
   try {
     const data = await model.select('*', ` where id = ${req.params.id}`);
-    res.status(httpStatuses.OK).json(data.rows);
+    res.status(httpStatuses.OK).json(helpers.dataOutPrepare(data.rows));
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack });
   }
@@ -103,7 +105,7 @@ exports.recipesUpdate = async (req, res) => {
     `;
 
     const data = await model.update(tableColumns, values, req.body.id, true);
-    res.status(httpStatuses.OK).json(data.rows);
+    res.status(httpStatuses.OK).json(helpers.dataOutPrepare(data.rows));
   } catch (e) {
     res.status(httpStatuses.BAD_REQUEST).json({ message: e.stack, rb: req.body });
   }
