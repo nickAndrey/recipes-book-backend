@@ -1,6 +1,5 @@
 // based on schema `https://schema.org/Recipe`
-module.exports = {
-  recipeTableSchema: `(
+export const recipeTableSchema = `(
     id serial not null primary key,
     name varchar(255) not null,
     cooktime char(50) not null,
@@ -13,5 +12,4 @@ module.exports = {
     image varchar(255),
     content text not null,
     description text not null
-  )`,
-};
+  )`;

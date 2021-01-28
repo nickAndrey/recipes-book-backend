@@ -1,8 +1,12 @@
-const { pool } = require('./pool');
-const queries = require('./queries');
+import pool from './pool';
+import { Pool } from 'pg';
+import { recipeTableSchema } from './queries';
 
-class Model {
-  constructor(table) {
+export class Model {
+  table: string;
+  pool: Pool;
+
+  constructor(table: string) {
     this.table = table;
     this.pool = pool;
 
@@ -11,7 +15,7 @@ class Model {
     });
   }
 
-  async select(columns, clause) {
+  async select(columns: string, clause: string = '') {
     let query = `select ${columns} from ${this.table}`;
 
     if (clause) {
@@ -20,7 +24,7 @@ class Model {
     return this.pool.query(query);
   }
 
-  async insert(columns, values, returnValue = false) {
+  async insert(columns: string, values: string, returnValue: boolean = false) {
     let query = `insert into ${this.table} (${columns}) values (${values})`;
 
     if (returnValue) {
@@ -29,7 +33,12 @@ class Model {
     return this.pool.query(query);
   }
 
-  async update(columns, values, id, returnValue = false) {
+  async update(
+    columns: string,
+    values: string,
+    id: string | undefined,
+    returnValue: boolean = false
+  ) {
     let query = `update ${this.table} set (${columns}) = (${values}) where id = ${id}`;
 
     if (returnValue) {
@@ -38,15 +47,15 @@ class Model {
     return this.pool.query(query);
   }
 
-  async delete(id) {
+  async delete(id: string) {
     const query = `delete from ${this.table} where id = ${id}`;
     return this.pool.query(query);
   }
 
-  async deleteMany(ids) {
+  async deleteMany(ids: string[]) {
     let query;
 
-    if (Array.isArray(ids)) {
+    if (ids && Array.isArray(ids)) {
       query = `delete from ${this.table} where id = any(${ids.map((id) =>
         parseInt(id)
       )}) returning *`;
@@ -56,7 +65,7 @@ class Model {
     return this.pool.query(query);
   }
 
-  async dropTable(reason = '') {
+  async dropTable(reason: string = '') {
     const query = `drop table if exists ${this.table}`;
     if (reason === 'this is unsafe') {
       return this.pool.query(query);
@@ -65,9 +74,7 @@ class Model {
   }
 
   async createTable() {
-    const query = `create table if not exists ${this.table} ${queries.recipeTableSchema}`;
+    const query = `create table if not exists ${this.table} ${recipeTableSchema}`;
     return this.pool.query(query);
   }
 }
-
-exports.Model = Model;
