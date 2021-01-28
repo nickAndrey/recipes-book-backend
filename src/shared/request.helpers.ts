@@ -1,11 +1,11 @@
-const MarkdownIt = require('markdown-it');
+import MarkdownIt from 'markdown-it';
 const md = new MarkdownIt();
 
-exports.setAsArray = (list) => {
+export const setAsArray = (list: any[]) => {
   return JSON.stringify(list).replace('[', '{').replace(']', '}').replace("'", '"');
 };
 
-exports.dataOutPrepare = (rows) => {
+export const dataOutPrepare = (rows: any[]) => {
   return rows.map((row) => {
     return {
       ...row,
