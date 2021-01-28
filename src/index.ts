@@ -20,7 +20,6 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-app.use('/', routes.homeRouter);
 app.use('/api/recipes', routes.recipeRouter);
 
 // Server Activation //
